@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Select Event Dates</title>
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 2em;
+      background: #f7f7f7;
+    }
+    h2 {
+      color: #003f7f;
+    }
+    label {
+      display: block;
+      margin-bottom: 0.5em;
+      font-weight: bold;
+    }
+    input, button {
+      width: 100%;
+      padding: 0.6em;
+      margin-bottom: 1.5em;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      font-size: 1em;
+    }
+    #submitBtn {
+      background-color: #003f7f;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    #submitBtn:hover {
+      background-color: #002f5f;
+    }
+  </style>
+</head>
+<body>
+  <h2>Select Event Dates</h2>
+
+  <!-- Hidden fields populated from external source -->
+  <input type="hidden" id="stewardName" value="">
+  <input type="hidden" id="eventName" value="">
+
+  <label for="datePicker">Dates:</label>
+  <input type="text" id="datePicker" placeholder="Choose the date" readonly>
+
+  <button id="submitBtn">Submit</button>
+
+  <script>
+    window.addEventListener("load", function () {
+      const urlParams = new URLSearchParams(window.location.search);
+      document.getElementById("stewardName").value = urlParams.get("meno") || "";
+      document.getElementById("eventName").value = urlParams.get("akcia") || "";
+    });
+
+    flatpickr("#datePicker", {
+      mode: "multiple",
+      dateFormat: "d.m.Y",
+      locale: "en"
+    });
+
+    document.getElementById("submitBtn").addEventListener("click", function () {
+      const steward = document.getElementById("stewardName").value;
+      const event = document.getElementById("eventName").value;
+      const dates = document.getElementById("datePicker").value.split(", ");
+      if (dates.length === 0 || !event || !steward) {
+        alert("Missing data: steward name, event name or dates.");
+        return;
+      }
+
+      dates.forEach(date => {
+        fetch("https://script.google.com/macros/s/AKfycbxSrNCOGSoGVmQ1FaEDoX_1bmn6K4DVqYdfcSX92KJiyKVcSzBpYkp1wlsXPG6d_I04NQ/exec", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            datum: date,
+            steward: steward,
+            akcia: event
+          })
+        });
+      });
+
+      alert("Dates have been successfully submitted.");
+      document.getElementById("datePicker").value = "";
+    });
+  </script>
+</body>
+</html>
