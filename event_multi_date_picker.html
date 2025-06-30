@@ -6,10 +6,10 @@
   <title>Multi-Date Event Picker</title>
   <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
   <style>
-    /* Full-screen flex centering */
     html, body {
       height: 100%;
       margin: 0;
+      padding: 0;
     }
     body {
       display: flex;
@@ -17,7 +17,7 @@
       justify-content: center;
       align-items: center;
       font-family: Arial, sans-serif;
-      padding: 1em;
+      padding: 2vh;
       box-sizing: border-box;
       background: #f9f9f9;
     }
@@ -26,32 +26,29 @@
       margin-bottom: 0.5em;
       font-size: 1.5em;
       color: #333;
+      text-align: center;
     }
 
     #datepicker-container {
       width: 100%;
       max-width: 360px;
-      margin: 0 auto;
     }
 
     #datepicker {
       width: 100%;
     }
 
-    /* Responsive table cells */
     .ui-datepicker table {
       width: 100% !important;
       table-layout: fixed !important;
     }
 
-    /* Selected days styling */
     .ui-datepicker td.ui-multidate-selected a {
       background-color: #0056b3 !important;
       border: 1px solid #003f7f !important;
       color: #ffffff !important;
     }
 
-    /* No hover color */
     .ui-datepicker td a:hover,
     .ui-datepicker td a:focus {
       background: transparent !important;
@@ -60,7 +57,6 @@
       box-shadow: none !important;
     }
 
-    /* Remove default highlight */
     .ui-datepicker .ui-state-highlight,
     .ui-datepicker td.ui-datepicker-current-day {
       background: none !important;
@@ -86,7 +82,6 @@
   <div id="datepicker-container">
     <div id="datepicker"></div>
   </div>
-  <!-- Hidden input for form submission -->
   <input type="hidden" id="selectedDatesInput" name="selectedDates">
   <div id="selectedDatesDisplay">(no dates selected)</div>
 
