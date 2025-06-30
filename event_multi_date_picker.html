@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,24 +6,52 @@
   <title>Multi-Date Event Picker</title>
   <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
   <style>
+    /* Full-screen flex centering */
+    html, body {
+      height: 100%;
+      margin: 0;
+    }
     body {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
       font-family: Arial, sans-serif;
-      padding: 20px;
-      text-align: center;
+      padding: 1em;
+      box-sizing: border-box;
+      background: #f9f9f9;
+    }
+
+    h3 {
+      margin-bottom: 0.5em;
+      font-size: 1.5em;
+      color: #333;
+    }
+
+    #datepicker-container {
+      width: 100%;
+      max-width: 360px;
+      margin: 0 auto;
     }
 
     #datepicker {
       width: 100%;
-      max-width: 320px;
-      margin: 0 auto;
     }
 
+    /* Responsive table cells */
+    .ui-datepicker table {
+      width: 100% !important;
+      table-layout: fixed !important;
+    }
+
+    /* Selected days styling */
     .ui-datepicker td.ui-multidate-selected a {
       background-color: #0056b3 !important;
       border: 1px solid #003f7f !important;
       color: #ffffff !important;
     }
 
+    /* No hover color */
     .ui-datepicker td a:hover,
     .ui-datepicker td a:focus {
       background: transparent !important;
@@ -33,6 +60,7 @@
       box-shadow: none !important;
     }
 
+    /* Remove default highlight */
     .ui-datepicker .ui-state-highlight,
     .ui-datepicker td.ui-datepicker-current-day {
       background: none !important;
@@ -41,9 +69,11 @@
     }
 
     #selectedDatesDisplay {
-      margin-top: 16px;
-      font-size: 14px;
-      color: #333;
+      margin-top: 1em;
+      font-size: 0.95em;
+      color: #555;
+      text-align: center;
+      word-wrap: break-word;
     }
 
     input[type="hidden"] {
@@ -53,11 +83,11 @@
 </head>
 <body>
   <h3>Select your event dates</h3>
-  <div id="datepicker"></div>
-
-  <!-- This hidden input collects selected dates -->
+  <div id="datepicker-container">
+    <div id="datepicker"></div>
+  </div>
+  <!-- Hidden input for form submission -->
   <input type="hidden" id="selectedDatesInput" name="selectedDates">
-
   <div id="selectedDatesDisplay">(no dates selected)</div>
 
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -69,23 +99,21 @@
       dateFormat: "yy-mm-dd",
       beforeShowDay: function(date) {
         const formatted = $.datepicker.formatDate("yy-mm-dd", date);
-        const isSelected = selectedDates.includes(formatted);
-        return [true, isSelected ? "ui-multidate-selected" : ""];
+        return [true, selectedDates.includes(formatted) ? "ui-multidate-selected" : ""];
       },
       onSelect: function(dateText) {
-        const index = selectedDates.indexOf(dateText);
-        if (index > -1) {
-          selectedDates.splice(index, 1);
-        } else {
-          selectedDates.push(dateText);
-        }
+        const idx = selectedDates.indexOf(dateText);
+        if (idx > -1) selectedDates.splice(idx, 1);
+        else selectedDates.push(dateText);
 
-        // Update hidden input and display
         $("#selectedDatesInput").val(selectedDates.join(","));
-        $("#selectedDatesDisplay").text("Selected dates: " + (selectedDates.length ? selectedDates.join(", ") : "(none)"));
+        $("#selectedDatesDisplay").text(
+          "Selected dates: " + (selectedDates.length ? selectedDates.join(", ") : "(none)")
+        );
         $(this).datepicker("refresh");
       }
     });
   </script>
 </body>
 </html>
+
