@@ -1,0 +1,91 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Multi-Date Event Picker</title>
+  <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      text-align: center;
+    }
+
+    #datepicker {
+      width: 100%;
+      max-width: 320px;
+      margin: 0 auto;
+    }
+
+    .ui-datepicker td.ui-multidate-selected a {
+      background-color: #0056b3 !important;
+      border: 1px solid #003f7f !important;
+      color: #ffffff !important;
+    }
+
+    .ui-datepicker td a:hover,
+    .ui-datepicker td a:focus {
+      background: transparent !important;
+      color: #007BFF !important;
+      outline: none !important;
+      box-shadow: none !important;
+    }
+
+    .ui-datepicker .ui-state-highlight,
+    .ui-datepicker td.ui-datepicker-current-day {
+      background: none !important;
+      border: none !important;
+      box-shadow: none !important;
+    }
+
+    #selectedDatesDisplay {
+      margin-top: 16px;
+      font-size: 14px;
+      color: #333;
+    }
+
+    input[type="hidden"] {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <h3>Select your event dates</h3>
+  <div id="datepicker"></div>
+
+  <!-- This hidden input collects selected dates -->
+  <input type="hidden" id="selectedDatesInput" name="selectedDates">
+
+  <div id="selectedDatesDisplay">(no dates selected)</div>
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
+  <script>
+    const selectedDates = [];
+
+    $("#datepicker").datepicker({
+      dateFormat: "yy-mm-dd",
+      beforeShowDay: function(date) {
+        const formatted = $.datepicker.formatDate("yy-mm-dd", date);
+        const isSelected = selectedDates.includes(formatted);
+        return [true, isSelected ? "ui-multidate-selected" : ""];
+      },
+      onSelect: function(dateText) {
+        const index = selectedDates.indexOf(dateText);
+        if (index > -1) {
+          selectedDates.splice(index, 1);
+        } else {
+          selectedDates.push(dateText);
+        }
+
+        // Update hidden input and display
+        $("#selectedDatesInput").val(selectedDates.join(","));
+        $("#selectedDatesDisplay").text("Selected dates: " + (selectedDates.length ? selectedDates.join(", ") : "(none)"));
+        $(this).datepicker("refresh");
+      }
+    });
+  </script>
+</body>
+</html>
